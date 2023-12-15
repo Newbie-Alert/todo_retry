@@ -2,8 +2,7 @@ import * as St from "./ModalStyle";
 import type { ModalProps } from "../../types/types";
 import { Button } from "../TodoList/TodoListStyle";
 import { useAppDispatch } from "../../hooks/useTodoSlice";
-import { setTodo } from "../../redux/modules/todos";
-import { todoAPI } from "../../api/todoAPI";
+import { __deleteTodo } from "../../redux/modules/todos";
 
 export default function Modal({ clicked, setModal }: ModalProps) {
   const dispatch = useAppDispatch();
@@ -12,26 +11,8 @@ export default function Modal({ clicked, setModal }: ModalProps) {
     setModal(false);
   };
 
-  const fetchTodos = async () => {
-    try {
-      const res = await todoAPI.get("/todos");
-      dispatch(setTodo(res.data));
-    } catch (err) {
-      alert("데이터를 가져올 수 없습니다");
-    }
-  };
-
-  const __deleteTodo = async () => {
-    try {
-      await todoAPI.delete(`/todos/${clicked?.id}`);
-      fetchTodos();
-    } catch (err) {
-      alert("삭제 실패");
-    }
-  };
-
   const deleteTodo = () => {
-    __deleteTodo();
+    dispatch(__deleteTodo(clicked));
     closeModal();
   };
 

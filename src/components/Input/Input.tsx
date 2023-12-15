@@ -3,8 +3,7 @@ import { v4 as uuid } from "uuid";
 import type { UserInput } from "../../types/types";
 import * as St from "./InputStyle";
 import { useAppDispatch } from "../../hooks/useTodoSlice";
-import { setTodo } from "../../redux/modules/todos";
-import { todoAPI } from "../../api/todoAPI";
+import { __addTodo, __fetchTodo } from "../../redux/modules/todos";
 
 export default function Input() {
   const initRef = useRef<any>();
@@ -24,26 +23,9 @@ export default function Input() {
     role === "text" && setUserInput((prev) => ({ ...prev, text: value }));
   };
 
-  const addTodos = async () => {
-    try {
-      todoAPI.post("/todos", userInput);
-    } catch (err) {
-      alert("등록 실패");
-    }
-  };
-
-  const fetchTodos = async () => {
-    try {
-      const res = await todoAPI.get("/todos");
-      dispatch(setTodo(res.data));
-    } catch (err) {
-      alert("데이터를 가져올 수 없습니다");
-    }
-  };
-
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    addTodos();
+    dispatch(__addTodo(userInput));
     setUserInput({
       id: uuid(),
       title: "",
@@ -52,10 +34,10 @@ export default function Input() {
       isDone: false,
     });
     initRef.current.focus();
-    fetchTodos();
   };
 
   useEffect(() => {
+    dispatch(__fetchTodo());
     initRef.current.focus();
   }, []);
 

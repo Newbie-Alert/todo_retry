@@ -7,3 +7,8 @@
 
 - lever 3 다시 해봄 ✅
 - RTK + React + json-server ✅
+
+---
+
+- lever 4 다시 해봄 ✅
+- RTK + React + json-server + thunk ✅
