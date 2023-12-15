@@ -1,11 +1,6 @@
-import { useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks/useTodoSlice";
-import {
-  __fetchTodo,
-  __switchTodo,
-  selectTodos,
-} from "../../redux/modules/todos";
-import type { ListProps } from "../../types/types";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import type { ListProps, queryTypes } from "../../types/types";
+import { getTodos, switchTodo } from "../../api/todoAPI";
 import * as St from "./TodoListStyle";
 
 export default function TodoList({
@@ -13,30 +8,55 @@ export default function TodoList({
   setClicked,
   setModal,
 }: ListProps) {
-  const { todos } = useAppSelector(selectTodos);
-  const dispatch = useAppDispatch();
+  // Query
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError }: queryTypes = useQuery("todos", getTodos);
+  const mutation = useMutation(switchTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+      console.log("수정 완료");
+    },
+  });
 
+  // Variables
   const filtered = isActive
-    ? todos?.filter((todo) => todo.isDone === false)
-    : todos?.filter((todo) => todo.isDone === true);
+    ? data?.filter((todo) => todo.isDone === false)
+    : data?.filter((todo) => todo.isDone === true);
 
+  // Functions
+  // click 이벤트 발생 시
+  // 서버에서 클릭 된 요소와 id가 같은 데이터를 찾아 수정
   const changeStatus = (e: React.MouseEvent<HTMLButtonElement>): void => {
     const { id } = e.currentTarget;
-    const found = todos.find((el) => el.id === id);
+    const found = data?.find((el) => el.id === id);
     const edited = { ...found, isDone: !found?.isDone };
-    dispatch(__switchTodo(edited));
+    mutation.mutate(edited);
   };
 
+  // 클릭 된 요소의 id를 가진 데이터를 찾아
+  // clicked state에 저장 / 모달 닫음
   const handleClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const { id } = e.currentTarget;
-    const found = todos?.find((todo) => todo.id === id);
+    const found = data?.find((todo) => todo.id === id);
     setClicked(found);
     setModal(true);
   };
 
-  useEffect(() => {
-    dispatch(__fetchTodo());
-  }, []);
+  if (isLoading === true) {
+    return (
+      <div>
+        <h1>로딩 중입니다...</h1>
+      </div>
+    );
+  }
+
+  if (isError === true) {
+    return (
+      <div>
+        <h1>에러가 발생하였습니다.</h1>
+      </div>
+    );
+  }
 
   return (
     <St.ListContainer>

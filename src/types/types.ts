@@ -28,3 +28,9 @@ export interface ModalProps {
   clicked: Todos | undefined;
   setModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+export interface queryTypes {
+  data?: Todos[];
+  isLoading?: boolean;
+  isError?: boolean;
+}

@@ -1,11 +1,3 @@
 {
-  "todos": [
-    {
-      "id": "eb062a21-05bb-40d9-9589-a36234221db5",
-      "title": "zxvasf",
-      "text": "qwt",
-      "createdAt": "2023-12-15T05:35:46.242Z",
-      "isDone": true
-    }
-  ]
+  "todos": []
 }
