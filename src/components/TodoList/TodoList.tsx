@@ -1,6 +1,8 @@
+import { useEffect } from "react";
+import { todoAPI } from "../../api/todoAPI";
 import { useAppDispatch, useAppSelector } from "../../hooks/useTodoSlice";
-import { selectTodos, switchTodo } from "../../redux/modules/todos";
-import type { ListProps } from "../../types/types";
+import { selectTodos, setTodo } from "../../redux/modules/todos";
+import type { ListProps, Todos } from "../../types/types";
 import * as St from "./TodoListStyle";
 
 export default function TodoList({
@@ -12,24 +14,43 @@ export default function TodoList({
   const dispatch = useAppDispatch();
 
   const filtered = isActive
-    ? todos.filter((todo) => todo.isDone === false)
-    : todos.filter((todo) => todo.isDone === true);
+    ? todos?.filter((todo) => todo.isDone === false)
+    : todos?.filter((todo) => todo.isDone === true);
+
+  const todoSwitchToggle = async (id: string, edited: Partial<Todos>) => {
+    await todoAPI.patch(`/todos/${id}`, edited);
+    fetchTodos();
+  };
 
   const changeStatus = (e: React.MouseEvent<HTMLButtonElement>): void => {
     const { id } = e.currentTarget;
-    dispatch(switchTodo(id));
+    const edited = todos.find((el) => el.id === id);
+    todoSwitchToggle(id, { ...edited, isDone: !edited?.isDone });
   };
 
   const handleClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     const { id } = e.currentTarget;
-    const found = todos.find((todo) => todo.id === id);
+    const found = todos?.find((todo) => todo.id === id);
     setClicked(found);
     setModal(true);
   };
 
+  const fetchTodos = async () => {
+    try {
+      const res = await todoAPI.get("/todos");
+      dispatch(setTodo(res.data));
+    } catch (err) {
+      alert("데이터를 가져올 수 없습니다");
+    }
+  };
+
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
   return (
     <St.ListContainer>
-      {filtered.map((todo) => {
+      {filtered?.map((todo) => {
         return (
           <St.ListItem key={todo.id}>
             <St.ItemTitle>{todo.title}</St.ItemTitle>
