@@ -2,7 +2,7 @@
 
 - level1 다시 ✅
 - TS + React ✅
-- 다시 만들어보면서 push를 잊었습니다..  
+- 다시 만들어보면서 push를 잊었습니다.
   처음 만든 프로젝트 참고 부탁드립니다.  
   [TS_Todolist - level 1](https://github.com/Newbie-Alert/TS_todo.git)
 
