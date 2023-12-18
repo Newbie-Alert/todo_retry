@@ -70,7 +70,8 @@
     ┗ setupTests.ts
 
 ## 컴포넌트 구조
-![image](https://github.com/Newbie-Alert/todo_retry/assets/133559761/d47147e9-6788-4d06-a8d8-67325cd65443)
+![image](https://github.com/Newbie-Alert/todo_retry/assets/133559761/deff0cfb-9da7-44e7-ba62-96f1dfbf885b)
+
 
 
 
